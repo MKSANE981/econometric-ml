@@ -53,7 +53,7 @@ def build_ml_models() -> dict:
         "Random Forest": Pipeline([
             ("model", RandomForestRegressor(
                 n_estimators=300, max_depth=10,
-                min_samples_leaf=5, random_state=42, n_jobs=-1,
+                min_samples_leaf=5, random_state=42, n_jobs=1,
             )),
         ]),
         "Gradient Boosting": Pipeline([
@@ -69,11 +69,13 @@ def build_ml_models() -> dict:
             ("model", XGBRegressor(
                 n_estimators=300, learning_rate=0.05, max_depth=4,
                 subsample=0.8, colsample_bytree=0.8,
-                reg_lambda=5, random_state=42, n_jobs=-1, verbosity=0,
+                reg_lambda=5, random_state=42, n_jobs=1, verbosity=0,
             )),
         ])
 
     return models
+
+
 
 
 def cross_validate_models(
@@ -99,9 +101,9 @@ def cross_validate_models(
     for name, model in models.items():
         rmse_scores = -cross_val_score(
             model, X, y, cv=kf,
-            scoring="neg_root_mean_squared_error", n_jobs=-1,
+            scoring="neg_root_mean_squared_error", n_jobs=1,
         )
-        r2_scores = cross_val_score(model, X, y, cv=kf, scoring="r2", n_jobs=-1)
+        r2_scores = cross_val_score(model, X, y, cv=kf, scoring="r2", n_jobs=1)
 
         results.append({
             "model": name,

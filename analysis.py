@@ -81,7 +81,8 @@ def load_stackoverflow_survey(path: Path) -> pd.DataFrame:
     # Top language dummies
     top_langs = ["Python", "JavaScript", "SQL", "TypeScript", "Rust", "Go", "Java", "C++"]
     for lang in top_langs:
-        df[f"lang_{lang.lower()}"] = df["LanguageHaveWorkedWith"].str.contains(lang, na=False).astype(int)
+        # regex=False required for C++ ("++" is invalid regex syntax)
+        df[f"lang_{lang.lower()}"] = df["LanguageHaveWorkedWith"].str.contains(lang, na=False, regex=False).astype(int)
 
     return df.dropna(subset=["log_salary", "exp", "edu"])
 
