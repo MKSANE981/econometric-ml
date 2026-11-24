@@ -62,7 +62,10 @@ def load_stackoverflow_survey(path: Path) -> pd.DataFrame:
     ].copy()
 
     df["log_salary"] = np.log(df["ConvertedCompYearly"])
-    df["exp"] = pd.to_numeric(df["YearsCodePro"], errors="coerce").fillna(df["YearsCodePro"].median())
+    # The 2023 survey codes extremes as text ("Less than 1 year", "More than 50 years")
+    years = df["YearsCodePro"].replace({"Less than 1 year": 0.5, "More than 50 years": 51})
+    years = pd.to_numeric(years, errors="coerce")
+    df["exp"] = years.fillna(years.median())
     df["exp_sq"] = df["exp"] ** 2
 
     # Education ordinal encoding
